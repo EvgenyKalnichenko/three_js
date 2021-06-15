@@ -4,7 +4,26 @@
 {% extends "layouts/_layout.twig" %}
 
 {% block content %}
-
-    <div id="container"></div>
-
+    <div class="main-slider">
+        <div id="container" class="main-slider__webgl"></div>
+        <div class="main-slider__container swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide main-slider__item" data-texture="./img/t1.png">
+                    <h2 class="main-slider__title">Name slide</h2>
+                </div>
+                <div class="swiper-slide main-slider__item" data-texture="./img/t2.png">
+                    <h2 class="main-slider__title">Name slide</h2>
+                </div>
+{#                <div class="swiper-slide main-slider__item" data-texture="./img/t3.png">#}
+{#                    <h2 class="main-slider__title">Name slide</h2>#}
+{#                </div>#}
+                <div class="swiper-slide main-slider__item" data-texture="./img/t4.png">
+                    <h2 class="main-slider__title">Name slide</h2>
+                </div>
+                <div class="swiper-slide main-slider__item" data-texture="./img/t5.png">
+                    <h2 class="main-slider__title">Name slide</h2>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
