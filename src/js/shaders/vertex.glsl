@@ -11,6 +11,7 @@ uniform float move;
 uniform float time;
 uniform vec2 mouse;
 uniform float mousePressed;
+uniform float transition;
 
 void main() {
     vUv = uv;
@@ -30,11 +31,12 @@ void main() {
     stable.y += 50.*sin(0.1*time*aPress)*aDirection*area*mousePressed;
     stable.z += 200.*cos(0.1*time*aPress)*aDirection*area*mousePressed;
 
+    pos = mix(pos, stable, transition);
+
     //stable
-    vec4 mvPosition = modelViewMatrix * vec4( stable, 1. );
+    vec4 mvPosition = modelViewMatrix * vec4( pos, 1. );
     gl_PointSize = 2000. * (1. / - mvPosition.z);
     gl_Position = projectionMatrix * mvPosition;
 
     vCoordinates = aCoordinates.xy;
-//    vPos = pos;
 }

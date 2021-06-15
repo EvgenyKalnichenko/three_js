@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 import fragment from './shaders/fragment.glsl';
 import vertex from './shaders/vertex.glsl';
 import gsap from 'gsap';
+import * as dat from 'dat.gui';
 
 export default class Sketch {
     constructor() {
@@ -23,16 +23,28 @@ export default class Sketch {
         this.textures = [
             new THREE.TextureLoader().load('./img/t1.png'),
             new THREE.TextureLoader().load('./img/t2.png'),
-        ]
+        ];
         this.mask = new THREE.TextureLoader().load('./img/particle_mask.jpg');
 
         this.time = 0;
         this.move = 0;
 
+        this.settings();
         this.creatingVar();
         this.addMesh();
         this.mouseEffects();
         this.addRender();
+    }
+
+    settings() {
+        let that = this;
+
+        this.settings = {
+            progress: 0,
+        };
+
+        this.gui = new dat.GUI();
+        this.gui.add(this.settings, 'progress', 0,1,0.01);
     }
 
     mouseEffects() {
@@ -42,7 +54,7 @@ export default class Sketch {
         );
 
         window.addEventListener('mousewheel', (e) => {
-            this.move += e.wheelDeltaY / 20;
+            this.move += e.wheelDeltaY / 2000;
             // console.log(this.move, this.camera.position.z, this.time);
         });
 
@@ -66,11 +78,9 @@ export default class Sketch {
             this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             this.mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
             this.raycaster.setFromCamera(this.mouse, this.camera);
-            let intersects = this.raycaster.intersectObjects([this.test])
-            console.log(intersects);
+            let intersects = this.raycaster.intersectObjects([this.test]);
             this.point.x = intersects[0].point.x;
             this.point.y = intersects[0].point.y;
-
         }, false);
     }
 
@@ -84,6 +94,7 @@ export default class Sketch {
                 t2: { type: 't', value: this.textures[1] },
                 mask:{ type: 't', value: this.mask },
                 mouse:{ type: 'v2', value: null },
+                transition:{ type: 'f', value: null },
                 mousePressed:{ type: 'f', value: 0 },
                 move:{ type: 'f', value: 0},
                 time:{ type: 'f', value: 0}
@@ -143,6 +154,13 @@ export default class Sketch {
     down(){
         console.log( this.material.uniforms.move.value );
         this.time++;
+
+        let next = Math.floor(this.move + 40)%2;
+        let prev = (Math.floor(this.move) + 1 + 40)%2;
+
+        this.material.uniforms.t1.value = this.textures[prev];
+        this.material.uniforms.t2.value = this.textures[next];
+        this.material.uniforms.transition.value = this.settings.progress;
         this.material.uniforms.move.value = this.move;
         this.material.uniforms.time.value = this.time;
         this.material.uniforms.mouse.value = this.point;
@@ -153,6 +171,7 @@ export default class Sketch {
 
         this.requestAnimation = requestAnimationFrame(this.addRender.bind(this));
         this.down();
+
         // Проверяем сколько времени просшло с предыдущего запуска
         this.now = Date.now();
         this.elapsed = this.now - this.then;
@@ -160,7 +179,6 @@ export default class Sketch {
         if(this.elapsed > this.fpsInterval) {
             //сохранение времени текущей отрисовки кадр
             this.then = this.now - (this.elapsed % this.fpsInterval);
-
         }
     }
 }
