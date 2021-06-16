@@ -1,91 +1,97 @@
 import Swiper from "swiper";
 import Sketch from "./_Sketch";
-import gsap from 'gsap';
+
+import {line, easeOutQuart, easeOutBounce} from "./_timing-function";
+import {animateEasing} from "./_animate-function";
 
 $(function () {
 
     const sketch = new Sketch();
 
-    const renderProgress = (p) => {
-        sketch.settings.progress = p;
+    const divide = (p) => {
+        sketch.settings.progress = 1 - p;
+    };
+
+    const collect = (p) => {
+        if(p >= 0.99) {
+            sketch.settings.progress = 1;
+        }else {
+            sketch.settings.progress = p;
+        }
     };
 
     const renderMove = (p) => {
-        sketch.move = 1 - p;
+
+        if(p >= 0.98) {
+            sketch.move = 0;
+        }else {
+            sketch.move = 1 - p;
+        }
     };
 
-    const animateDurationStart = (render, duration, nextFunction) => new Promise(resolve => {
-        let start = Date.now();
-        sketch.move = 1;
-        (function loop() {
-            let p = (Date.now() - start) / duration;
+    let flag = true;
 
-            if(p > 0.7){
-                nextFunction();
-            }
-            if(p > 1) {
-                resolve();
-            }else{
-                //отрисовка анимации
-                requestAnimationFrame(loop);
-                sketch.settings.progress = 1 - p;
-                sketch.move =  1 - p;
-            }
-        }());
-    });
+    const toggleImage = () => {
+        animateEasing(divide,800, easeOutQuart);
+        animateEasing(renderMove,1000, line);
+        setTimeout(()=> {
+            animateEasing(collect,1200, easeOutBounce);
+        }, 800);
 
-    const power = (n, timeFraction) => {
-      return Math.pow(timeFraction, n)
+        setTimeout(()=>{
+            flag = true;
+        }, 1200)
     };
 
-    const animateDurationEnd = (render, duration, nextFunction) => new Promise(resolve => {
-        let start = Date.now();
-        sketch.move = 1;
-        (function loop() {
-            let p = (Date.now() - start) / duration;
+    const prevTexture = () => {
+        let x = $('.swiper-slide-prev').attr('data-texture');
+        console.log('prevTexture' , x);
+        return x;
+    };
 
-            if(p > 1) {
-                resolve();
-                sketch.settings.progress = 1;
-            }else{
-                //отрисовка анимации
-                requestAnimationFrame(loop);
-                sketch.settings.progress = p;
-            }
-        }());
-    });
+    const activeTexture = () => {
+        let x = $('.swiper-slide-active').attr('data-texture');
+        console.log('activeTexture' , x);
+        return x;
+    };
+
+    const nextTexture = () => {
+        return $('.swiper-slide-next').attr('data-texture');
+    };
 
     const mainSwiper = new Swiper('.main-slider__container', {
         slidesPerView: 1,
         watchSlidesProgress: true,
+        effect: 'fade',
+        fadeEffect: {
+            crossFade: true
+        },
         on: {
-            slideChange: function () {
-                animateDurationStart(renderMove, 400, ()=>{
-                    animateDurationEnd(renderProgress, 200)
-                });
+            init: function (){
+                sketch.loadTexture(activeTexture(), nextTexture());
+                animateEasing(collect,900, easeOutQuart);
             },
             slideNextTransitionStart: function () {
-                sketch.nextTexture = $('.swiper-slide-next').attr('data-texture') || $('.swiper-slide-prev').attr('data-texture');
-                sketch.currentTexture = $('.swiper-slide-active').attr('data-texture');
-
-                console.log(sketch.nextTexture, sketch.currentTexture);
-                setTimeout(function () {
-                    sketch.loadTexture();
-                }, 400)
-
+                flag = false;
+                sketch.loadTexture(prevTexture(), activeTexture());
+                toggleImage();
             },
             slidePrevTransitionStart:function () {
-
-                sketch.nextTexture = $('.swiper-slide-active').attr('data-texture');
-                sketch.loadTexture();
-
-                console.log(sketch.nextTexture, sketch.currentTexture);
-
-                setTimeout(function () {
-                    sketch.currentTexture = $('.swiper-slide-active').attr('data-texture');
-                    sketch.loadTexture();
-                }, 400)
+                flag = false;
+                sketch.loadTexture(nextTexture(), activeTexture());
+                toggleImage();
             },
+        }
+    });
+
+
+    window.addEventListener('mousewheel', (e) => {
+        if(flag){
+            if(e.wheelDeltaY < 0 ){
+                mainSwiper.slideNext()
+            }else {
+                mainSwiper.slidePrev()
+            }
         }
     });
 });

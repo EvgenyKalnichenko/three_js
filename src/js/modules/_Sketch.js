@@ -27,7 +27,7 @@ export default class Sketch {
         this.move = 1;
         this.pointSize = 3000;
 
-        this.loadTexture();
+        this.loadTexture(this.currentTexture, this.nextTexture);
         this.settings();
         this.creatingVar();
         this.addMesh();
@@ -46,10 +46,10 @@ export default class Sketch {
         this.gui.add(this.settings, 'progress', 0,1,0.01);
     }
 
-    loadTexture() {
+    loadTexture(currentTexture, nextTexture) {
         this.textures = [
-            new THREE.TextureLoader().load(this.currentTexture),
-            new THREE.TextureLoader().load(this.nextTexture),
+            new THREE.TextureLoader().load(currentTexture),
+            new THREE.TextureLoader().load(nextTexture),
         ];
         this.mask = new THREE.TextureLoader().load('./img/particle_mask.jpg');
     }
@@ -60,11 +60,11 @@ export default class Sketch {
             new THREE.MeshBasicMaterial(),
         );
 
-        window.addEventListener('mousewheel', (e) => {
-            this.move += e.wheelDeltaY / 2000;
-
-            console.log( this.move)
-        });
+        // window.addEventListener('mousewheel', (e) => {
+        //     this.move += e.wheelDeltaY / 2000;
+        //
+        //     console.log( this.move)
+        // });
 
         window.addEventListener('mousedown', (e) => {
             gsap.to(this.material.uniforms.mousePressed, {
@@ -90,15 +90,6 @@ export default class Sketch {
             this.point.x = intersects[0].point.x;
             this.point.y = intersects[0].point.y;
         }, false);
-    }
-
-    toggleImage () {
-        console.log('toggleImage start',this.move);
-        gsap.to(this.move, {
-            duration:1,
-            value: 1,
-        });
-        console.log('toggleImage end',this.move);
     }
 
     addMesh () {
@@ -190,14 +181,16 @@ export default class Sketch {
         this.requestAnimation = requestAnimationFrame(this.addRender.bind(this));
         this.down();
         // Проверяем сколько времени просшло с предыдущего запуска
-        this.now = Date.now();
-        this.elapsed = this.now - this.then;
-        //Проверяем прошло ли достаточно времени от прошлой отрисовки кадра
-        if(this.elapsed > this.fpsInterval) {
-            //сохранение времени текущей отрисовки кадр
-            this.then = this.now - (this.elapsed % this.fpsInterval);
-        }
+        // this.now = Date.now();
+        // this.elapsed = this.now - this.then;
+        // //Проверяем прошло ли достаточно времени от прошлой отрисовки кадра
+        // if(this.elapsed > this.fpsInterval) {
+        //     //сохранение времени текущей отрисовки кадр
+        //     this.then = this.now - (this.elapsed % this.fpsInterval);
+        // }
     }
+
+    //
 }
 
 // window.sk = new Sketch();

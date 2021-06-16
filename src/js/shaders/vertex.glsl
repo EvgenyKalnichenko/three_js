@@ -36,7 +36,7 @@ void main() {
 
     //stable
     vec4 mvPosition = modelViewMatrix * vec4( pos, 1. );
-    gl_PointSize = 2100. * (1. / - mvPosition.z);
+    gl_PointSize = 2000. * (1. / - mvPosition.z);
     gl_Position = projectionMatrix * mvPosition;
 
     vCoordinates = aCoordinates.xy;

@@ -1,27 +1,29 @@
 {% set index = true %}
-{% set title = "Главная"%}
+{% set title = "Главная" %}
 
 {% extends "layouts/_layout.twig" %}
 
 {% block content %}
     <div class="main-slider">
         <div id="container" class="main-slider__webgl"></div>
-        <div class="main-slider__container swiper-container">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide main-slider__item" data-texture="./img/t1.png">
-                    <h2 class="main-slider__title">Name slide</h2>
-                </div>
-                <div class="swiper-slide main-slider__item" data-texture="./img/t2.png">
-                    <h2 class="main-slider__title">Name slide</h2>
-                </div>
-{#                <div class="swiper-slide main-slider__item" data-texture="./img/t3.png">#}
-{#                    <h2 class="main-slider__title">Name slide</h2>#}
-{#                </div>#}
-                <div class="swiper-slide main-slider__item" data-texture="./img/t4.png">
-                    <h2 class="main-slider__title">Name slide</h2>
-                </div>
-                <div class="swiper-slide main-slider__item" data-texture="./img/t5.png">
-                    <h2 class="main-slider__title">Name slide</h2>
+        <div class="container">
+            <div class="main-slider__container swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide main-slider__item" data-texture="./img/t1.png">
+                        <h2 class="main-slider__title" data-split-words>Name brand</h2>
+                    </div>
+                    <div class="swiper-slide main-slider__item" data-texture="./img/t6.png">
+                        <h2 class="main-slider__title" data-split-words>Coca cola</h2>
+                    </div>
+                    <div class="swiper-slide main-slider__item" data-texture="./img/t7.png">
+                        <h2 class="main-slider__title" data-split-words>Sprite</h2>
+                    </div>
+                    <div class="swiper-slide main-slider__item" data-texture="./img/t8.png">
+                        <h2 class="main-slider__title" data-split-words>Fanta</h2>
+                    </div>
+                    <div class="swiper-slide main-slider__item" data-texture="./img/t5.png">
+                        <h2 class="main-slider__title" data-split-words>Adidas</h2>
+                    </div>
                 </div>
             </div>
         </div>
