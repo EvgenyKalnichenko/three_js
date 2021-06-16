@@ -189,8 +189,4 @@ export default class Sketch {
         //     this.then = this.now - (this.elapsed % this.fpsInterval);
         // }
     }
-
-    //
 }
-
-// window.sk = new Sketch();

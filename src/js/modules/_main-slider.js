@@ -86,6 +86,7 @@ $(function () {
 
 
     window.addEventListener('mousewheel', (e) => {
+        console.log(e.wheelDeltaY );
         if(flag){
             if(e.wheelDeltaY < 0 ){
                 mainSwiper.slideNext()
